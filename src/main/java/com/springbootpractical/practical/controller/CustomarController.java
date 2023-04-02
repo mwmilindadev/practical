@@ -29,6 +29,15 @@ public class CustomarController {
 
     }
 
+    @DeleteMapping(path = "/delete-customar",
+    params = "id")
+    public String deleteCustomar(@RequestParam(value = "id") int customarId){
+        String message=customarServise.deleteCustomar(customarId);
+        return  message;
+
+    }
+
+
     @GetMapping(path = "/get-custor-by-id",
     params ="id" )
     public CustomarDTO getCustomarById(@RequestParam(value = "id") int customarId){
@@ -45,6 +54,16 @@ public class CustomarController {
         return customarDTOList;
 
     }
+
+    @GetMapping(path = "get-customar-by-city/{city}/{name}")
+    public List<CustomarDTO> getCustomarByCityAndName(@PathVariable(value = "city") String cityName,@PathVariable(value = "name")String customarName){
+           List<CustomarDTO>customarDTOList=customarServise.getCustomarByCityAndName(cityName,customarName);
+           return customarDTOList;
+    }
+
+
+
+
 
 
 

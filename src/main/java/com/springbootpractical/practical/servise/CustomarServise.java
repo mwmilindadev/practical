@@ -13,4 +13,8 @@ public interface CustomarServise {
     CustomarDTO getCustomarById(int customarId);
 
     List<CustomarDTO> getAllCustomars();
+
+    String deleteCustomar(int customarId);
+
+    List<CustomarDTO> getCustomarByCityAndName(String cityName, String customarName);
 }

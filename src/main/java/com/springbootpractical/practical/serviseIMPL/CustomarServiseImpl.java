@@ -6,6 +6,7 @@ import com.springbootpractical.practical.dto.request.CustomarUpdateDTO;
 import com.springbootpractical.practical.entity.Customar;
 import com.springbootpractical.practical.repository.CustomarRepository;
 import com.springbootpractical.practical.servise.CustomarServise;
+import com.springbootpractical.practical.util.mapper.CustomarMapper;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +22,13 @@ public class CustomarServiseImpl implements CustomarServise {
 
     @Autowired
     ModelMapper modelMapper;
+
+    @Autowired
+    private CustomarMapper customarMapper;
     @Override
     public String saveCustomar(CustomarDTO customarDTO) {
-        Customar customar=modelMapper.map(customarDTO,Customar.class);
+        //Customar customar=modelMapper.map(customarDTO,Customar.class);//modelmapper
+        Customar customar=customarMapper.dtoToCustomarSave(customarDTO);//mapstruct
         customarRepository.save(customar);
         return customarDTO.getCustomarName() + "Saved Success.";
     }
@@ -32,7 +37,8 @@ public class CustomarServiseImpl implements CustomarServise {
     public String updateCustomar(CustomarUpdateDTO customarUpdateDTO) {
         if(customarRepository.existsById(customarUpdateDTO.getCustomarId())){
 
-            Customar customar = modelMapper.map(customarUpdateDTO,Customar.class);
+            //Customar customar = modelMapper.map(customarUpdateDTO,Customar.class);//modelmapper
+            Customar customar = customarMapper.dtoToCustoma(customarUpdateDTO);//mapstruct
             customarRepository.save(customar);
             return customarUpdateDTO.getCustomarId()+ "Updated";
 
@@ -46,7 +52,8 @@ public class CustomarServiseImpl implements CustomarServise {
     public CustomarDTO getCustomarById(int customarId) {
         if(customarRepository.existsById(customarId)){
             Customar customar= customarRepository.getReferenceById(customarId);
-            CustomarDTO customarDTO = modelMapper.map(customar,CustomarDTO.class);
+            //CustomarDTO customarDTO = modelMapper.map(customar,CustomarDTO.class);//modelmapper
+            CustomarDTO customarDTO =customarMapper.customarEnityToDto(customar);//mapstruct
             return customarDTO;
 
         }else{
@@ -61,12 +68,39 @@ public class CustomarServiseImpl implements CustomarServise {
         List<Customar> customarList=customarRepository.findAll();
         if(customarList.size()>0){
 
-            List<CustomarDTO>customarDTOList=modelMapper.map(customarList,new TypeToken<List<CustomarDTO>>(){}.getType());
+            //List<CustomarDTO>customarDTOList=modelMapper.map(customarList,new TypeToken<List<CustomarDTO>>(){}.getType());//modelmapper
+            List<CustomarDTO>customarDTOList=customarMapper.customarEntityListToDtoList(customarList);//mapstruct
             return customarDTOList;
         }else{
             throw new RuntimeException("No data found");
         }
 
+
+    }
+
+    @Override
+    public String deleteCustomar(int customarId) {
+        if(customarRepository.existsById(customarId)){
+            customarRepository.deleteById(customarId);
+            return customarId + "Deleted";
+
+        }else{
+            throw new RuntimeException("No data found");
+        }
+
+
+    }
+
+    @Override
+    public List<CustomarDTO> getCustomarByCityAndName(String cityName, String customarName) {
+        List<Customar> customarList=customarRepository.findAllByCustomarAddressEqualsAndCustomarNameEquals(cityName,customarName);
+        if(customarList.size()>0) {
+            //List<CustomarDTO> customarDTOList = customarMapper.customarEntityListToDtoList(customarList);//modelmapper
+            List<CustomarDTO>customarDTOList=modelMapper.map(customarList,new TypeToken<List<CustomarDTO>>(){}.getType());//mapstruct
+            return customarDTOList;
+        }else{
+            throw new RuntimeException("No Data found");
+        }
 
     }
 
