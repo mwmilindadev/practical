@@ -1,6 +1,7 @@
 package com.springbootpractical.practical.serviseIMPL;
 
 import com.springbootpractical.practical.dto.ItemDTO;
+import com.springbootpractical.practical.dto.paginated.ItemPeginatedDTO;
 import com.springbootpractical.practical.dto.request.ItemUpdateDTO;
 import com.springbootpractical.practical.dto.response.ItemRespoanceDTO;
 import com.springbootpractical.practical.entity.Item;
@@ -11,6 +12,8 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -104,5 +107,19 @@ public class ItemServiseImpl implements ItemServise {
             throw new RuntimeException("No Data Fond");
         }
 
+    }
+
+    @Override
+    public ItemPeginatedDTO finAllStatusPeginated(boolean activeStatus, int page, int size) {
+        Page<Item>itemPage=itemRepository.findAllByActiveStatusEquals(activeStatus, PageRequest.of(page, size));
+        if(itemPage.getSize()<1){
+            throw new RuntimeException("NotFound");
+
+        }
+        ItemPeginatedDTO itemPeginatedDTO = new ItemPeginatedDTO(
+        itemMapper.pageToDto(itemPage),
+                itemRepository.countAllByActiveStatusEquals(activeStatus)
+        );
+        return itemPeginatedDTO;
     }
 }

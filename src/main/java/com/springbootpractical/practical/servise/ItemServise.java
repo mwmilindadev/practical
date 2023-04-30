@@ -1,6 +1,7 @@
 package com.springbootpractical.practical.servise;
 
 import com.springbootpractical.practical.dto.ItemDTO;
+import com.springbootpractical.practical.dto.paginated.ItemPeginatedDTO;
 import com.springbootpractical.practical.dto.request.ItemUpdateDTO;
 import com.springbootpractical.practical.dto.response.ItemRespoanceDTO;
 
@@ -18,4 +19,6 @@ public interface ItemServise {
     List<ItemRespoanceDTO> getAllItems();
 
     List<ItemRespoanceDTO> getAllBalanceQty(double balanceQty);
+
+    ItemPeginatedDTO finAllStatusPeginated(boolean activeStatus, int page, int size);
 }

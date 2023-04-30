@@ -5,6 +5,7 @@ import com.springbootpractical.practical.dto.request.ItemUpdateDTO;
 import com.springbootpractical.practical.dto.response.ItemRespoanceDTO;
 import com.springbootpractical.practical.entity.Item;
 import org.mapstruct.Mapper;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -17,4 +18,6 @@ public interface ItemMapper {
     List<ItemRespoanceDTO> entityListToDtoList(List<Item> itemList);
 
     ItemRespoanceDTO entityToDto(Item item);
+
+    List<ItemRespoanceDTO> pageToDto(Page<Item> itemPage);
 }

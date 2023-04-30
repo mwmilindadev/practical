@@ -2,6 +2,7 @@ package com.springbootpractical.practical.serviseIMPL;
 
 import com.springbootpractical.practical.configuration.ModelMapperConfigurations;
 import com.springbootpractical.practical.dto.CustomarDTO;
+import com.springbootpractical.practical.dto.paginated.CustomarPeginatedDTO;
 import com.springbootpractical.practical.dto.request.CustomarUpdateDTO;
 import com.springbootpractical.practical.entity.Customar;
 import com.springbootpractical.practical.repository.CustomarRepository;
@@ -10,6 +11,8 @@ import com.springbootpractical.practical.util.mapper.CustomarMapper;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -102,6 +105,22 @@ public class CustomarServiseImpl implements CustomarServise {
             throw new RuntimeException("No Data found");
         }
 
+    }
+
+    @Override
+    public CustomarPeginatedDTO getAllPeginated(boolean status, int page, int size) throws ClassNotFoundException {
+
+        Page<Customar>customarPage=customarRepository.findAllByActivateStatusEquals(status, PageRequest.of(page,size));
+         if(customarPage.getSize()<1){
+             throw new ClassNotFoundException("no");
+         }
+         CustomarPeginatedDTO customarPeginatedDTO=new CustomarPeginatedDTO(
+                 customarMapper.pageToDto(customarPage),
+                 customarRepository.countAllByActivateStatusEquals(status)
+
+         );
+
+        return customarPeginatedDTO;
     }
 
 }

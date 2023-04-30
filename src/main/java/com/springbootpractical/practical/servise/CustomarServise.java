@@ -1,6 +1,7 @@
 package com.springbootpractical.practical.servise;
 
 import com.springbootpractical.practical.dto.CustomarDTO;
+import com.springbootpractical.practical.dto.paginated.CustomarPeginatedDTO;
 import com.springbootpractical.practical.dto.request.CustomarUpdateDTO;
 
 import java.util.List;
@@ -17,4 +18,6 @@ public interface CustomarServise {
     String deleteCustomar(int customarId);
 
     List<CustomarDTO> getCustomarByCityAndName(String cityName, String customarName);
+
+    CustomarPeginatedDTO getAllPeginated(boolean status, int page, int size) throws ClassNotFoundException;
 }

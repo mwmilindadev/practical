@@ -1,12 +1,17 @@
 package com.springbootpractical.practical.controller;
 
 import com.springbootpractical.practical.dto.ItemDTO;
+import com.springbootpractical.practical.dto.paginated.ItemPeginatedDTO;
 import com.springbootpractical.practical.dto.request.ItemUpdateDTO;
 import com.springbootpractical.practical.dto.response.ItemRespoanceDTO;
 import com.springbootpractical.practical.servise.ItemServise;
+import com.springbootpractical.practical.util.StandardResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Max;
 import java.util.List;
 
 @RestController
@@ -56,6 +61,21 @@ public class ItemController {
     public List<ItemRespoanceDTO>getQtyList(@PathVariable(name = "qty") double balanceQty){
         List<ItemRespoanceDTO>itemRespoanceDTOS=itemServise.getAllBalanceQty(balanceQty);
         return itemRespoanceDTOS;
+
+    }
+
+    @GetMapping(path = "/get-All-status-list",
+    params = {"status","page","size"})
+
+    public ResponseEntity<StandardResponse>getAllActivPaginated(
+            @RequestParam(value = "status")boolean activeStatus,
+            @RequestParam(value = "page")int page,
+            @RequestParam(value = "size")@Max(50)int size
+    ){
+        ItemPeginatedDTO itemPeginatedDTO=itemServise.finAllStatusPeginated(activeStatus,page,size);
+
+        return  new ResponseEntity<StandardResponse>(new
+                StandardResponse(200,"ok",itemPeginatedDTO), HttpStatus.OK);
 
     }
 
