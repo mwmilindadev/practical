@@ -1,6 +1,9 @@
 package com.springbootpractical.practical.serviseIMPL;
 
+import com.springbootpractical.practical.dto.paginated.OrderDetailsPeginatedDTO;
+import com.springbootpractical.practical.dto.queryinterface.OrderDetailsInterface;
 import com.springbootpractical.practical.dto.request.RequestOrderSaveDTO;
+import com.springbootpractical.practical.dto.response.ResponseOrderDetailsDTO;
 import com.springbootpractical.practical.entity.Customar;
 import com.springbootpractical.practical.entity.OrderDetails;
 import com.springbootpractical.practical.entity.Orders;
@@ -12,6 +15,7 @@ import com.springbootpractical.practical.servise.OrderSevise;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -65,6 +69,14 @@ public class OrderServiseImpl implements OrderSevise {
         }
 
         return "saved";
+    }
+
+    @Override
+    public OrderDetailsPeginatedDTO getAllStateOrderDetails(boolean satus, int page, int size) {
+        List<OrderDetailsInterface> list=orderRepository.getAllOrderDetails(satus, PageRequest.of(page, size));
+        List<ResponseOrderDetailsDTO>detailsDTOS=modelMapper.map(list,new TypeToken<List<ResponseOrderDetailsDTO>>(){}.getType());
+        OrderDetailsPeginatedDTO orderDetailsPeginatedDTO=new OrderDetailsPeginatedDTO(detailsDTOS,orderRepository.countAllDetails(satus));
+        return orderDetailsPeginatedDTO;
     }
 
 }
